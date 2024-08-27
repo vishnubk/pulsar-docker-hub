@@ -1,0 +1,42 @@
+# Start from the CUDA CentOS base image
+FROM nvidia/cuda:11.0.3-devel-centos7
+
+# Update and install necessary packages
+RUN yum update -y && \
+    yum install -y \
+    vim \
+    git \
+    ca-certificates \
+    parallel \
+    latex2html \
+    wget \
+    unzip \
+    bzip2 \
+    gcc \
+    make \
+    emacs \
+    zlib-devel
+
+WORKDIR /software/
+
+RUN git clone https://github.com/ewanbarr/dedisp.git && \
+    cd dedisp && \
+    git checkout arch61 && \
+    make -j 32 && \
+    make install
+
+RUN git clone https://github.com/ewanbarr/peasoup.git && \
+    cd peasoup && \
+    git checkout accel_plan_fix && \
+    make -j 32 && \
+    make install
+
+# Update the dynamic linker run-time bindings
+RUN ldconfig /usr/local/lib
+
+#Optional if you want gnu parallel
+RUN wget http://ftp.gnu.org/gnu/parallel/parallel-latest.tar.bz2 && \
+    tar xjf parallel-latest.tar.bz2 && \
+    cd parallel-20230722 && \
+    ./configure && make && \
+    make install
