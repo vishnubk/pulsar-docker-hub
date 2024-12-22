@@ -18,20 +18,17 @@ RUN apt update -y && \
     make \
     emacs \
     zlib1g-dev \
-    uuid-runtime \
-    python3 \
-    python3-pip \
-    python-is-python3
+    g++ \
+    libtclap-dev
 
 
-# Install numpy using pip
-RUN pip install numpy
+
 
 WORKDIR /software/
 
 RUN git clone https://github.com/vishnubk/dedisp.git && \
     cd dedisp && \
-    git checkout sm_89 && \
+    git checkout sm_75_hercules && \
     make -j 32 && \
     make install
 
